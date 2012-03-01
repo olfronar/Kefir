@@ -42,6 +42,8 @@ class Insert(tornado.web.RequestHandler):
         except:
             message = "Incorrect count value"
             self.render("main_template.html", title="My title", message=message)
+        self.application.db.items.remove(callback = (yield gen.Callback("removed")))
+        remove_response = yield gen.Wait("removed")
         keys = []
         for x in xrange(0, count):
             keys.append("key"+str(x))
