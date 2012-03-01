@@ -32,10 +32,6 @@ class Application(tornado.web.Application):
 
 class Main(tornado.web.RequestHandler):
     def get(self):
-        if "system_message" in self.request.session.keys():
-            message = self.request.session["system_message"]
-        else:
-            message = ""
         self.render("main_template.html", title="My title", message=message)
         self.finish()
 
@@ -49,12 +45,8 @@ class Insert(tornado.web.RequestHandler):
             message = "Incorrect count value"
             self.render("main_template.html", title="My title", message=message)
         if count > 1000000:
-            self.request.session["system_message"] = u"Ай-яй-яй"
-            self.redirect("/")
-        if "system_message" in self.request.session.keys():
-            message = self.request.session["system_message"]
-        else:
-            message = ""
+            message = "Ай-яй-яй"
+            self.render("main_template.html", title="My title", message=message)
         self.application.db.items.remove(callback = (yield gen.Callback("removed")))
         remove_response = yield gen.Wait("removed")
         keys = []
