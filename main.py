@@ -37,4 +37,16 @@ class Insert(tornado.web.RequestHandler):
     def on_response(self, response, error):
         if error:
             raise tornado.web.HTTPError(500)
-        self.render('index.html', messages=response[::-1])
+        self.render('index.html', messages=respons
+
+
+def main():
+    tornado.options.parse_command_line()
+    application = Application
+    http_server = tornado.httpserver.HTTPServer(application)
+    http_server.listen(options.port)
+    tornado.ioloop.IOLoop.instance().start()
+
+
+if __name__ == "__main__":
+        main()
