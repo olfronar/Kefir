@@ -33,7 +33,7 @@ class Application(tornado.web.Application):
 class Main(tornado.web.RequestHandler):
     def get(self):
         self.render("main_template.html", title="My title", message="")
-        self.finish()
+        #self.finish()
 
 class Insert(tornado.web.RequestHandler):
     @tornado.web.asynchronous
@@ -55,7 +55,7 @@ class Insert(tornado.web.RequestHandler):
             self.application.db.items.save({'_id':x, 'val':randrange(0,count)}, callback = (yield gen.Callback("key"+str(x))))
         response = yield gen.WaitAll(keys)
         self.render("main_template.html", title="My title", message="Done")
-        self.finish()
+        #self.finish()
 
 class Test(tornado.web.RequestHandler):
     @tornado.web.asynchronous
@@ -66,7 +66,7 @@ class Test(tornado.web.RequestHandler):
         if error:
             raise tornado.web.HTTPError(500)
         self.render('index.html', message=response)
-        self.finish()
+        #self.finish()
 
 
 def main():
