@@ -6,7 +6,7 @@ import tornado.httpserver
 import tornado.ioloop
 import tornado.options
 import tornado.web
-import tornado.gen
+from tornado import gen
 import asyncmongo
 from random import randrange
 
@@ -35,7 +35,7 @@ class Main(tornado.web.RequestHandler):
 
 class Insert(tornado.web.RequestHandler):
     @tornado.web.asynchronous
-    @tornado.gen.engine
+    @gen.engine
     def post(self):
         try:
             count = int(self.get_argument("count"))
