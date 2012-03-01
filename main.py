@@ -19,8 +19,8 @@ class Application(tornado.web.Application):
         self.db = asyncmongo.Client(pool_id='mydb', host='127.0.0.1', port=27017, maxcached=10, maxconnections=50, dbname='kefir_test')
         handlers = [
             (r'/', Main),
-            (r'/insert_data', Insert),
-            (r'/test_data', Test)
+            (r'^insert_data', Insert),
+            (r'^test_data', Test)
         ]
         settings = dict(
             template_path=os.path.join(os.path.dirname(__file__), 'templates'),
