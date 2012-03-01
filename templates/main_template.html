@@ -6,37 +6,37 @@
 </head>
 <body>
     <table border='0' align='center' cellspacing='0'  cellpadding='0' width="1000" height="100%">
-    <td>
         <tr>
-            <b>{{ message }}</b>
-        </tr>
-    </td>
-    <td>
-        <tr>
+            <td>
+                <p style='color: green'>{{ message }}</p>
+            </td>
+        </tr>>
+
+        <tr><td>
             <b>Создание записей в БД для тестирования.</b> (Прошу создавать не более 1 млн.)
-        </tr>
-    </td>
-    <td>
-        <tr>
+        </td></tr>
+
+
+        <tr><td>
             <form method="post" action="/mongo/insert_data">
                 <p><input type="text" pattern="\d+" name="count"> Количество создаваемых объектов</p>
                 <p><input type="submit" value="Создать"></p>
             </form>
-        </tr>
-    </td>
-        <td>
-            <tr>
+        </td></tr>
+
+
+            <tr><td>
                 <b>Запуск теста.</b>
-            </tr>
-        </td>
-        <td>
-            <tr>
+            </td></tr>
+
+
+            <tr><td>
                 <form action="/mongo/test_data">
                     <p>Тестирование</p>
                     <p><input type="submit" value="Запустить"></p>
                 </form>
-            </tr>
-        </td>
+            </td></tr>
+
     </table>
 </body>
 </html>

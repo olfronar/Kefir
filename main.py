@@ -17,7 +17,7 @@ define("port", default=8001, help="run on the given port", type=int)
 
 class Application(tornado.web.Application):
     def __init__(self):
-        self.db = asyncmongo.Client(pool_id='mydb', host='127.0.0.1', port=27017, maxcached=10, maxconnections=50, dbname='kefir_test')
+        self.db = asyncmongo.Client(pool_id='mydb', host='127.0.0.1', port=27017, maxcached=10, maxconnections=1000001, dbname='kefir_test')
         handlers = [
             (r'/', Main),
             (r'/insert_data', Insert),
@@ -31,7 +31,12 @@ class Application(tornado.web.Application):
 
 class Main(tornado.web.RequestHandler):
     def get(self):
-        self.render("main_template.html", title="My title", message="")
+        if "system_message" in self.request.session.keys():
+            message = self.request.session["system_message"]
+        else:
+            message = ""
+        self.render("main_template.html", title="My title", message=message)
+        self.finish()
 
 class Insert(tornado.web.RequestHandler):
     @tornado.web.asynchronous
@@ -42,6 +47,13 @@ class Insert(tornado.web.RequestHandler):
         except:
             message = "Incorrect count value"
             self.render("main_template.html", title="My title", message=message)
+        if count > 1000000:
+            self.request.session["system_message"] = u'Information\'s incorrect' = "Ай-яй-яй"
+            self.redirect("/")
+        if "system_message" in self.request.session.keys():
+            message = self.request.session["system_message"]
+        else:
+            message = ""
         self.application.db.items.remove(callback = (yield gen.Callback("removed")))
         remove_response = yield gen.Wait("removed")
         keys = []
@@ -50,6 +62,7 @@ class Insert(tornado.web.RequestHandler):
             self.application.db.items.save({'_id':x, 'val':randrange(0,count)}, callback = (yield gen.Callback("key"+str(x))))
         response = yield gen.WaitAll(keys)
         self.render("main_template.html", title="My title", message="Done")
+        self.finish()
 
 class Test(tornado.web.RequestHandler):
     @tornado.web.asynchronous
@@ -60,6 +73,7 @@ class Test(tornado.web.RequestHandler):
         if error:
             raise tornado.web.HTTPError(500)
         self.render('index.html', message=response)
+        self.finish()
 
 
 def main():
