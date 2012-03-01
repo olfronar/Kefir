@@ -5,6 +5,9 @@
     <title>{{ title }}</title>
 </head>
 <body>
-    Hello!
+    <form action="/mongo/insert_data">
+        <p><input type="text" pattern="\d+" name="count">Количество создаваемых объектов</p>
+        <p><input type="submit" value="Создать"></p>
+    </form>
 </body>
 </html>

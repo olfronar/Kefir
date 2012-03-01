@@ -15,7 +15,7 @@ define("port", default=8001, help="run on the given port", type=int)
 
 class Application(tornado.web.Application):
     def __init__(self):
-        self.db = asyncmongo.Client(pool_id='mydb', host='127.0.0.1', port=27017, dbname='kefir_test')
+        self.db = asyncmongo.Client(pool_id='mydb', host='127.0.0.1', port=27017, maxcached=10, maxconnections=50, dbname='kefir_test')
         handlers = [
             (r'/', Main),
             (r'/insert_data', Insert)
