@@ -42,8 +42,11 @@ class Insert(tornado.web.RequestHandler):
         except:
             message = "Incorrect count value"
             self.render("main_template.html", title="My title", message=message)
+        keys = []
         for x in xrange(0, count):
-            r, error = yield gen.Task(self.application.db.items.save({'_id':x, 'val':randrange(0,count)}))
+            keys.append("key"+str(x))
+            self.application.db.items.save({'_id':x, 'val':randrange(0,count)}, callback = (yield gen.Callback("key"+str(x))))
+        response = yield gen.WaitAll(keys)
         self.render("main_template.html", title="My title", message="Done")
 
 class Test(tornado.web.RequestHandler):
