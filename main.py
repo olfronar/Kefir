@@ -7,6 +7,7 @@ import tornado.ioloop
 import tornado.options
 import tornado.web
 import asyncmongo
+from random import random
 
 from tornado.options import define, options
 
@@ -18,7 +19,8 @@ class Application(tornado.web.Application):
         self.db = asyncmongo.Client(pool_id='mydb', host='127.0.0.1', port=27017, maxcached=10, maxconnections=50, dbname='kefir_test')
         handlers = [
             (r'/', Main),
-            (r'/insert_data', Insert)
+            (r'/insert_data', Insert),
+            (r'/test_data', Test)
         ]
         settings = dict(
             template_path=os.path.join(os.path.dirname(__file__), 'templates'),
@@ -31,6 +33,17 @@ class Main(tornado.web.RequestHandler):
         self.render("main_template.html", title="My title")
 
 class Insert(tornado.web.RequestHandler):
+    def post(self):
+        try:
+            count = int(self.get_argument("count"))
+        except:
+            message = "Incorrect count value"
+            self.render("main_template.html", title="My title", message=message)
+        for x in xrange(0, count):
+            self.application.db.items.insert({'_id':x, 'val':random(0,count)})
+        self.render("main_template.html", title="My title", message="Done")
+
+class Test(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     def get(self):
         self.application.db.messages.find({}, limit=50, sort=[('time', -1)], callback=self.on_response)
