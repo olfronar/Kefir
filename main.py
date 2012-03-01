@@ -42,7 +42,7 @@ class Insert(tornado.web.RequestHandler):
 
 def main():
     tornado.options.parse_command_line()
-    application = Application
+    application = Application()
     http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()
