@@ -7,7 +7,7 @@ import tornado.ioloop
 import tornado.options
 import tornado.web
 import asyncmongo
-from random import random
+from random import randrange
 
 from tornado.options import define, options
 
@@ -40,7 +40,7 @@ class Insert(tornado.web.RequestHandler):
             message = "Incorrect count value"
             self.render("main_template.html", title="My title", message=message)
         for x in xrange(0, count):
-            self.application.db.items.insert({'_id':x, 'val':random(0,count)})
+            self.application.db.items.insert({'_id':x, 'val':randrange(0,count)})
         self.render("main_template.html", title="My title", message="Done")
 
 class Test(tornado.web.RequestHandler):
