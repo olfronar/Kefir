@@ -48,7 +48,7 @@ class Insert(tornado.web.RequestHandler):
             message = "Incorrect count value"
             self.render("main_template.html", title="My title", message=message)
         if count > 1000000:
-            self.request.session["system_message"] = u'Information\'s incorrect' = "Ай-яй-яй"
+            self.request.session["system_message"] = u"Ай-яй-яй"
             self.redirect("/")
         if "system_message" in self.request.session.keys():
             message = self.request.session["system_message"]
