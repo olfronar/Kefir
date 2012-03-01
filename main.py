@@ -30,7 +30,7 @@ class Application(tornado.web.Application):
 
 class Main(tornado.web.RequestHandler):
     def get(self):
-        self.render("main_template.html", title="My title")
+        self.render("main_template.html", title="My title", message="")
 
 class Insert(tornado.web.RequestHandler):
     def post(self):
