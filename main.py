@@ -37,7 +37,7 @@ class Insert(tornado.web.RequestHandler):
     def on_response(self, response, error):
         if error:
             raise tornado.web.HTTPError(500)
-        self.render('index.html', messages=respons
+        self.render('index.html', message=response)
 
 
 def main():
