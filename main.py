@@ -18,7 +18,7 @@ define("port", default=8001, help="run on the given port", type=int)
 
 class Application(tornado.web.Application):
     def __init__(self):
-        self.db = asyncmongo.Client(pool_id='mydb', host='127.0.0.1', port=27017, maxcached=10, maxconnections=1000001, dbname='kefir_test')
+        self.db = asyncmongo.Client(pool_id='mydb', host='127.0.0.1', port=27017, maxcached=100, maxconnections=1000, dbname='kefir_test')
         handlers = [
             (r'/', Main),
             (r'/insert_data', Insert),
@@ -34,8 +34,9 @@ class Main(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     @gen.engine
     def get(self):
-        self.application.db.items.count(callback = (yield gen.Callback("find")))
-        db_count = yield gen.Wait("find")
+        db_count = yield gen.Task(self.db.items.count, {})
+        #self.application.db.items.count(callback = (yield gen.Callback("find")))
+        #db_count = yield gen.Wait("find")
         self.render("main_template.html", title="My title", message="", db_count = db_count)
         #self.finish()
 
