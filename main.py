@@ -91,7 +91,7 @@ class GetRandomItem(tornado.web.RequestHandler):
         target = randrange(0, count)
         self.application.db.items.find_one({'_id': target}, callback = (yield gen.Callback("key")))
         response = yield gen.Wait("key")
-        self.render({"_id": response['_id'], "val": response['val']})
+        self.write({"_id": response['_id'], "val": response['val']})
 
 
 def main():
