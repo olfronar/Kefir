@@ -94,7 +94,9 @@ class GetRandomItem(tornado.web.RequestHandler):
         print response
         print response[0][0]
         print response[0][0][u'_id']
+        print response[0][0][u'val']
         self.write({"_id": response[0][0][u'_id'], "val": response[0][0][u'val']})
+        self.finish()
 
 def main():
     tornado.options.parse_command_line()
