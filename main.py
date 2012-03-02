@@ -8,7 +8,7 @@ import tornado.ioloop
 import tornado.options
 import tornado.web
 from tornado import gen
-import asyncmongo
+import asyncmongo,pymongo
 from random import randrange
 
 from tornado.options import define, options
@@ -33,9 +33,9 @@ class Application(tornado.web.Application):
 class Main(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     def get(self):
-        self.application.db.items.find().count(callback = self.on_find)
-        #db_count = yield gen.Wait("find")
-    def on_find(self,db_count):
+        conn = pymongo.Connection('127.0.0.1', 27017)
+        db = conn['kefir_test']
+        db_count = db.items.find().count()
         self.render("main_template.html", title="My title", message="", db_count = db_count)
         #self.finish()
 
@@ -56,8 +56,9 @@ class Insert(tornado.web.RequestHandler):
         for x in xrange(0, count):
             self.application.db.items.save({'_id':x, 'val':randrange(0,count)}, callback = (yield gen.Callback("key")))
             response = yield gen.Wait("key")
-        self.application.db.items.count(callback = (yield gen.Callback("find")))
-        db_count = yield gen.Wait("find")
+        conn = pymongo.Connection('127.0.0.1', 27017)
+        db = conn['kefir_test']
+        db_count = db.items.find().count()
         self.render("main_template.html", title="My title", message="Done", db_count = db_count)
         #self.finish()
 
