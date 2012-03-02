@@ -56,7 +56,7 @@ class Insert(tornado.web.RequestHandler):
         small_count = count % NUM
         for y in xrange(0,big_count):
             keys = []
-            for x in xrange(0, 200):
+            for x in xrange(0, NUM):
                 keys.append("key"+str(x))
                 self.application.db.items.save({'_id':x+y*NUM, 'val':randrange(0,count)}, callback = (yield gen.Callback("key"+str(x))))
             response = yield gen.WaitAll(keys)
