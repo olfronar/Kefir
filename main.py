@@ -45,25 +45,16 @@ class Insert(tornado.web.RequestHandler):
         except:
             message = "Incorrect count value"
             self.render("main_template.html", title="My title", message=message)
-        if count > 1000000:
+        if count > 1000000 or NUM > 100:
             message = "Ай-яй-яй"
             self.render("main_template.html", title="My title", message=message)
         self.application.db.items.remove(callback = (yield gen.Callback("removed")))
         remove_response = yield gen.Wait("removed")
         keys = []
-        big_count = count / NUM
-        small_count = count % NUM
-        for y in xrange(0,big_count):
-            keys = []
-            for x in xrange(0, NUM):
-                keys.append("key"+str(x))
-                self.application.db.items.save({'_id':x+y*NUM, 'val':randrange(0,count)}, callback = (yield gen.Callback("key"+str(x))))
-            response = yield gen.WaitAll(keys)
-        keys = []
-        for x in xrange(0, small_count):
+        for x in xrange(0, count):
             keys.append("key"+str(x))
-            self.application.db.items.save({'_id':x+big_count*NUM, 'val':randrange(0,count)}, callback = (yield gen.Callback("key"+str(x))))
-        response = yield gen.WaitAll(keys)
+            self.application.db.items.save({'_id':x+y*NUM, 'val':randrange(0,count)}, callback = (yield gen.Callback("key"+str(x))))
+            response = yield gen.WaitAll(keys)
         self.render("main_template.html", title="My title", message="Done")
         #self.finish()
 
