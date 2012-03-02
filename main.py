@@ -15,8 +15,6 @@ from tornado.options import define, options
 
 define("port", default=8001, help="run on the given port", type=int)
 
-NUM = 200
-
 
 class Application(tornado.web.Application):
     def __init__(self):
@@ -43,6 +41,7 @@ class Insert(tornado.web.RequestHandler):
     def post(self):
         try:
             count = int(self.get_argument("count"))
+            NUM = int(self.get_argument("pack_count"))
         except:
             message = "Incorrect count value"
             self.render("main_template.html", title="My title", message=message)
