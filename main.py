@@ -32,7 +32,8 @@ class Application(tornado.web.Application):
 
 class Main(tornado.web.RequestHandler):
     def get(self):
-        db_count = self.application.db.items.find().count()
+        db_count = self.application.db.items.find().count(callback = (yield gen.Callback("find")))
+        remove_response = yield gen.Wait("find")
         self.render("main_template.html", title="My title", message="", db_count = db_count)
         #self.finish()
 
