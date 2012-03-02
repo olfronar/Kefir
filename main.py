@@ -71,10 +71,10 @@ class Test(tornado.web.RequestHandler):
             count = int(self.get_argument("count"))
         except:
             message = "Incorrect count value"
-            self.render("main_template.html", title="My title", message=message)
+            self.render("main_template.html", title="My title", message=message, db_count = count)
         if count > 1000000:
             message = "Ай-яй-яй"
-            self.render("main_template.html", title="My title", message=message)
+            self.render("main_template.html", title="My title", message=message, db_count = count)
         target = random.randrange(0, count)
         t = time.time()
         self.application.db.items.find_one({'_id': target}, callback = (yield gen.Callback("key")))
