@@ -23,7 +23,8 @@ class Application(tornado.web.Application):
         handlers = [
             (r'/', Main),
             (r'/insert_data', Insert),
-            (r'/test_data', Test)
+            (r'/test_data', Test),
+            (r'/get_random_item', GetRandomItem)
         ]
         settings = dict(
             template_path=os.path.join(os.path.dirname(__file__), 'templates'),
@@ -81,6 +82,16 @@ class Test(tornado.web.RequestHandler):
         response = yield gen.Wait("key")
         t = time.time() - t
         self.render("test_template.html", title="My title", message="Done", time = t)
+
+class GetRandomItem(tornado.web.RequestHandler):
+    @tornado.web.asynchronous
+    @gen.engine
+    def post(self):
+        count = 100000
+        target = randrange(0, count)
+        self.application.db.items.find_one({'_id': target}, callback = (yield gen.Callback("key")))
+        response = yield gen.Wait("key")
+        self.render({"_id": response['_id'], "val": response['val']})
 
 
 def main():
