@@ -79,7 +79,7 @@ class Test(tornado.web.RequestHandler):
         target = randrange(0, count)
         t = time.time()
         self.application.db.items.find_one({'_id': target}, callback = (yield gen.Callback("key")))
-        response = yield gen.Wait("key")
+        response,error = yield gen.Wait("key")
         t = time.time() - t
         self.render("test_template.html", title="My title", message="Done", time = t)
 
@@ -90,8 +90,8 @@ class GetRandomItem(tornado.web.RequestHandler):
         count = 100000
         target = randrange(0, count)
         self.application.db.items.find_one({'_id': target}, callback = (yield gen.Callback("key")))
-        response = yield gen.Wait("key")
-        self.write({"_id": response._id, "val": response.val})
+        response,error = yield gen.Wait("key")
+        self.write({"_id": response['_id'], "val": response['val']})
 
 
 def main():
