@@ -42,21 +42,19 @@ class Insert(tornado.web.RequestHandler):
     def post(self):
         try:
             count = int(self.get_argument("count"))
-            NUM = int(self.get_argument("pack_count"))
         except:
             message = "Incorrect count value"
             self.render("main_template.html", title="My title", message=message)
-        if count > 1000000 or NUM > 100:
+        if count > 1000000:
             message = "Ай-яй-яй"
             self.render("main_template.html", title="My title", message=message)
         self.application.db.items.remove(callback = (yield gen.Callback("removed")))
         remove_response = yield gen.Wait("removed")
-        keys = []
         for x in xrange(0, count):
-            keys.append("key"+str(x))
-            self.application.db.items.save({'_id':x+y*NUM, 'val':randrange(0,count)}, callback = (yield gen.Callback("key"+str(x))))
-            response = yield gen.WaitAll(keys)
-        db_count = self.application.db.items.find().count()
+            self.application.db.items.save({'_id':x, 'val':randrange(0,count)}, callback = (yield gen.Callback("key")))
+            response = yield gen.Wait("key")
+        db_count = self.application.db.items.find().count(callback = (yield gen.Callback("find")))
+        remove_response = yield gen.Wait("find")
         self.render("main_template.html", title="My title", message="Done", db_count = db_count)
         #self.finish()
 
