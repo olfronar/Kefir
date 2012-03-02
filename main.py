@@ -56,12 +56,12 @@ class Insert(tornado.web.RequestHandler):
             keys = []
             for x in xrange(0, 200):
                 keys.append("key"+str(x))
-                self.application.db.items.save({'_id':x, 'val':randrange(0,count)}, callback = (yield gen.Callback("key"+str(x))))
+                self.application.db.items.save({'_id':x+y*200, 'val':randrange(0,count)}, callback = (yield gen.Callback("key"+str(x))))
             response = yield gen.WaitAll(keys)
         keys = []
         for x in xrange(0, small_count):
             keys.append("key"+str(x))
-            self.application.db.items.save({'_id':x, 'val':randrange(0,count)}, callback = (yield gen.Callback("key"+str(x))))
+            self.application.db.items.save({'_id':x+big_count*200, 'val':randrange(0,count)}, callback = (yield gen.Callback("key"+str(x))))
         response = yield gen.WaitAll(keys)
         self.render("main_template.html", title="My title", message="Done")
         #self.finish()
