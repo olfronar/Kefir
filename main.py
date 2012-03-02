@@ -32,7 +32,8 @@ class Application(tornado.web.Application):
 
 class Main(tornado.web.RequestHandler):
     def get(self):
-        self.render("main_template.html", title="My title", message="")
+        db_count = self.application.db.items.find().count()
+        self.render("main_template.html", title="My title", message="", db_count = db_count)
         #self.finish()
 
 class Insert(tornado.web.RequestHandler):
@@ -55,7 +56,8 @@ class Insert(tornado.web.RequestHandler):
             keys.append("key"+str(x))
             self.application.db.items.save({'_id':x+y*NUM, 'val':randrange(0,count)}, callback = (yield gen.Callback("key"+str(x))))
             response = yield gen.WaitAll(keys)
-        self.render("main_template.html", title="My title", message="Done")
+        db_count = self.application.db.items.find().count()
+        self.render("main_template.html", title="My title", message="Done", db_count = db_count)
         #self.finish()
 
 class Test(tornado.web.RequestHandler):
