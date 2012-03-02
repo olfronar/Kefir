@@ -66,7 +66,7 @@ class Insert(tornado.web.RequestHandler):
 class Test(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     @gen.engine
-    def get(self):
+    def post(self):
         try:
             count = int(self.get_argument("count"))
         except:
