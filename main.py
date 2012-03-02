@@ -74,7 +74,7 @@ class Test(tornado.web.RequestHandler):
         except:
             message = "Incorrect count value"
             self.render("main_template.html", title="My title", message=message, db_count = count)
-        if count > 1000000 or repeat > 100000:
+        if count > 1000000 or repeat > 5000:
             message = "Ай-яй-яй"
             self.render("main_template.html", title="My title", message=message, db_count = count)
         global_time = time.time()
