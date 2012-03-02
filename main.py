@@ -86,7 +86,7 @@ class Test(tornado.web.RequestHandler):
 class GetRandomItem(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     @gen.engine
-    def post(self):
+    def get(self):
         count = 100000
         target = randrange(0, count)
         self.application.db.items.find_one({'_id': target}, callback = (yield gen.Callback("key")))
