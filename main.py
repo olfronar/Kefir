@@ -9,6 +9,7 @@ import tornado.options
 import tornado.web
 from tornado import gen
 import asyncmongo,pymongo
+import time
 from random import randrange
 
 from tornado.options import define, options
@@ -64,14 +65,22 @@ class Insert(tornado.web.RequestHandler):
 
 class Test(tornado.web.RequestHandler):
     @tornado.web.asynchronous
+    @gen.engine
     def get(self):
-        self.application.db.messages.find({}, limit=50, sort=[('time', -1)], callback=self.on_response)
-
-    def on_response(self, response, error):
-        if error:
-            raise tornado.web.HTTPError(500)
-        self.render('index.html', message=response)
-        #self.finish()
+        try:
+            count = int(self.get_argument("count"))
+        except:
+            message = "Incorrect count value"
+            self.render("main_template.html", title="My title", message=message)
+        if count > 1000000:
+            message = "Ай-яй-яй"
+            self.render("main_template.html", title="My title", message=message)
+        target = random.randrange(0, count)
+        t = time.time()
+        self.application.db.items.find_one({'_id': target}, callback = (yield gen.Callback("key")))
+        response = yield gen.Wait("key")
+        t = time.time() - t
+        self.render("test_template.html", title="My title", message="Done", time = t)
 
 
 def main():
