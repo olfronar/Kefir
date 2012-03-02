@@ -31,6 +31,8 @@ class Application(tornado.web.Application):
         tornado.web.Application.__init__(self, handlers, **settings)
 
 class Main(tornado.web.RequestHandler):
+    @tornado.web.asynchronous
+    @gen.engine
     def get(self):
         db_count = self.application.db.items.find().count(callback = (yield gen.Callback("find")))
         remove_response = yield gen.Wait("find")
