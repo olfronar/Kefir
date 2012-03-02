@@ -15,6 +15,8 @@ from tornado.options import define, options
 
 define("port", default=8001, help="run on the given port", type=int)
 
+NUM = 200
+
 
 class Application(tornado.web.Application):
     def __init__(self):
@@ -50,18 +52,18 @@ class Insert(tornado.web.RequestHandler):
         self.application.db.items.remove(callback = (yield gen.Callback("removed")))
         remove_response = yield gen.Wait("removed")
         keys = []
-        big_count = count / 200
-        small_count = count % 200
+        big_count = count / NUM
+        small_count = count % NUM
         for y in xrange(0,big_count):
             keys = []
             for x in xrange(0, 200):
                 keys.append("key"+str(x))
-                self.application.db.items.save({'_id':x+y*200, 'val':randrange(0,count)}, callback = (yield gen.Callback("key"+str(x))))
+                self.application.db.items.save({'_id':x+y*NUM, 'val':randrange(0,count)}, callback = (yield gen.Callback("key"+str(x))))
             response = yield gen.WaitAll(keys)
         keys = []
         for x in xrange(0, small_count):
             keys.append("key"+str(x))
-            self.application.db.items.save({'_id':x+big_count*200, 'val':randrange(0,count)}, callback = (yield gen.Callback("key"+str(x))))
+            self.application.db.items.save({'_id':x+big_count*NUM, 'val':randrange(0,count)}, callback = (yield gen.Callback("key"+str(x))))
         response = yield gen.WaitAll(keys)
         self.render("main_template.html", title="My title", message="Done")
         #self.finish()
