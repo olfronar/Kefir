@@ -34,7 +34,7 @@ class Main(tornado.web.RequestHandler):
     @tornado.web.asynchronous
     @gen.engine
     def get(self):
-        self.application.db.items.find(callback = (yield gen.Callback("find"))).count()
+        self.application.db.items.find().count(callback = (yield gen.Callback("find")))
         db_count = yield gen.Wait("find")
         self.render("main_template.html", title="My title", message="", db_count = db_count)
         #self.finish()
