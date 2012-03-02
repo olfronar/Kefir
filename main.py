@@ -70,18 +70,23 @@ class Test(tornado.web.RequestHandler):
     def post(self):
         try:
             count = int(self.get_argument("count"))
+            repeat = int(self.get_argument("repeat"))
         except:
             message = "Incorrect count value"
             self.render("main_template.html", title="My title", message=message, db_count = count)
-        if count > 1000000:
+        if count > 1000000 or repeat > 100000:
             message = "Ай-яй-яй"
             self.render("main_template.html", title="My title", message=message, db_count = count)
-        target = randrange(0, count)
-        t = time.time()
-        self.application.db.items.find_one({'_id': target}, callback = (yield gen.Callback("key")))
-        response,error = yield gen.Wait("key")
-        t = time.time() - t
-        self.render("test_template.html", title="My title", message="Done", time = t)
+        global_time = time.time()
+        for x in xrange(0,repeat):
+            target = randrange(0, count)
+            self.application.db.items.find_one({'_id': target}, callback = (yield gen.Callback("key")))
+            response,error = yield gen.Wait("key")
+        global_time = time.time() - global_time
+        global_count = repeat
+        self.render("result_template.html", title="My title", message="Done",
+            time = global_time, count = global_count, rps = global_count/float(global_time),
+            mid_time = global_time/float(global_count))
 
 class GetRandomItem(tornado.web.RequestHandler):
     @tornado.web.asynchronous
@@ -91,10 +96,6 @@ class GetRandomItem(tornado.web.RequestHandler):
         target = randrange(0, count)
         self.application.db.items.find({'_id': target}, callback = (yield gen.Callback("key")))
         response,error = yield gen.Wait("key")
-        print response
-        print response[0][0]
-        print response[0][0][u'_id']
-        print response[0][0][u'val']
         self.write({"_id": response[0][0][u'_id'], "val": response[0][0][u'val']})
         self.finish()
 
