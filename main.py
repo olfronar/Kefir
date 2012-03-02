@@ -92,9 +92,9 @@ class GetRandomItem(tornado.web.RequestHandler):
         self.application.db.items.find({'_id': target}, callback = (yield gen.Callback("key")))
         response,error = yield gen.Wait("key")
         print response
-        print response[0]
-        print response[0][u'_id']
-        self.write({"_id": response[0][u'_id'], "val": response[0][u'val']})
+        print response[0][0]
+        print response[0][0][u'_id']
+        self.write({"_id": response[0][0][u'_id'], "val": response[0][0][u'val']})
 
 def main():
     tornado.options.parse_command_line()
